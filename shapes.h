@@ -20,5 +20,5 @@ typedef struct Square {
     Vec2 lower_left;
     Vec2 lower_right;
     Color color;
-    int norm;
+    char norm;
 } Square;

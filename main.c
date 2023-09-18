@@ -128,6 +128,7 @@ int main(int argc, char *argv[]) {
  
 	glEnable(GL_DEPTH_TEST); 
 
+    // this should be done by a func
     int t_l[2] = {-500, -500};
     int t_r[2] = {500, -500};
     int b_l[2] = {-500, 500};
@@ -136,7 +137,7 @@ int main(int argc, char *argv[]) {
  
     Square *test = malloc(sizeof(Square));    
     *test = make_square(t_l, t_r, b_l, b_r, color);
-
+    // end of part that needs to be cleaned
 
 	while(1) {
  		XNextEvent(dpy, &xev);
