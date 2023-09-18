@@ -1,12 +1,12 @@
 typedef struct Vec2 {
-    int x;
-    int y;
+    float x;
+    float y;
 } Vec2;
 
 typedef struct Color {
-    int r;
-    int g;
-    int b;
+    float r;
+    float g;
+    float b;
 } Color;
 
 typedef struct Square {
@@ -19,5 +19,6 @@ typedef struct Square {
     Vec2 top_right;
     Vec2 lower_left;
     Vec2 lower_right;
-    Color color[3];
+    Color color;
+    int norm;
 } Square;

@@ -29,15 +29,22 @@ Square make_square(int top_left[2], int top_right[2], int lower_left[2], int low
     temp.lower_left.y = lower_left[1];
     temp.lower_right.x = lower_right[0];
     temp.lower_right.y = lower_right[1];
-    temp.color->r = color[0];
-    temp.color->g = color[1];
-    temp.color->b = color[2];
+    temp.color.r = color[0];
+    temp.color.g = color[1];
+    temp.color.b = color[2];
+    temp.norm = 0;
     return temp;
 }
 
 void convert_Vec2(Vec2 *vec) {
-    vec->x = vec->x/1000;
-    vec->y = vec->y/1000;
+        vec->x = vec->x/1000;
+        vec->y = vec->y/1000;
+}
+
+void convert_Color(Color *color) {
+    color->r = color->r/255;
+    color->g = color->g/255;
+    color->b = color->b/255;
 }
 
 void convert_square_values(Square *square) {
@@ -45,13 +52,18 @@ void convert_square_values(Square *square) {
     convert_Vec2(&(square->top_right));
     convert_Vec2(&(square->lower_left));
     convert_Vec2(&(square->lower_right));
+    convert_Color(&(square->color));
+    square->norm = 1;
 }
 
 void DrawAQuad(Square *square) {
  	glClearColor(1.0, 1.0, 1.0, 1.0);
  	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  convert_square_values(square);
-  printf("%d\n", square->lower_left.x);
+    
+    if (square->norm == 0){
+        convert_square_values(square);
+        printf("%f\n", square->lower_left.x);
+    }
 
 
  	glMatrixMode(GL_PROJECTION);
@@ -65,10 +77,11 @@ void DrawAQuad(Square *square) {
     
 
  	glBegin(GL_QUADS);
- 	 	glColor3f(1., 0., 1.); glVertex3f(-.75, -.75, 0.);
- 	 	glColor3f(0., 0., 1.); glVertex3f( .75, -.75, 0.);
- 	 	glColor3f(0., 0., 1.); glVertex3f( .75,  .75, 0.);
- 	 	glColor3f(1., 0., 1.); glVertex3f(-.75,  .75, 0.);
+ 	 	glColor3f(square->color.r, square->color.g, square->color.b);
+        glVertex3f(square->top_left.x, square->top_left.y, 0.);
+ 	 	glVertex3f( square->top_right.x, square->top_right.y, 0.);
+ 	 	glVertex3f( square->lower_right.x,  square->lower_right.y, 0.);
+ 	 	glVertex3f(square->lower_left.x, square->lower_left.y, 0.);
  	glEnd();
 } 
 	
@@ -108,21 +121,21 @@ int main(int argc, char *argv[]) {
  	win = XCreateWindow(dpy, root, 0, 0, 600, 600, 0, vi->depth, InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
 
  	XMapWindow(dpy, win);
- 	XStoreName(dpy, win, "VERY SIMPLE APPLICATION");
+ 	XStoreName(dpy, win, "COOL THING");
  
  	glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
  	glXMakeCurrent(dpy, win, glc);
  
 	glEnable(GL_DEPTH_TEST); 
 
-  int t_l[2] = {-750, -750};
-  int t_r[2] = {750, -750};
-  int b_l[2] = {-750, 750};
-  int b_r[2] = {750, 750};
-  int color[3] = {0, 240, 0};
-
-  Square *test = malloc(sizeof(Square));    
-  *test = make_square(t_l, t_r, b_l, b_r, color);
+    int t_l[2] = {-500, -500};
+    int t_r[2] = {500, -500};
+    int b_l[2] = {-500, 500};
+    int b_r[2] = {500, 500};
+    int color[3] = {250, 0, 0};
+ 
+    Square *test = malloc(sizeof(Square));    
+    *test = make_square(t_l, t_r, b_l, b_r, color);
 
 
 	while(1) {
@@ -135,13 +148,18 @@ int main(int argc, char *argv[]) {
         } else if(xev.type == KeyPress) {
 			KeySym key = XLookupKeysym(&xev.xkey, 0);
 	
-        	if (key == XK_Escape) {
-                free(test);
-                glXMakeCurrent(dpy, None, NULL);
-        	    glXDestroyContext(dpy, glc);
-        	    XDestroyWindow(dpy, win);
-        	    XCloseDisplay(dpy);
-        	    exit(0);
+        	switch (key) {
+                case XK_Escape:
+                    free(test);
+                    glXMakeCurrent(dpy, None, NULL);
+        	        glXDestroyContext(dpy, glc);
+        	        XDestroyWindow(dpy, win);
+        	        XCloseDisplay(dpy);
+        	        exit(0);
+                    break;
+                case XK_Up:
+                    printf("you pressed up\n");
+                    break;
         	}
         }
     } /* this closes while(1) { */
