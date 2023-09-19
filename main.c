@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) {
         	        exit(0);
                     break;
                 case XK_Up:
-                    printf("you pressed up\n");
+
                     break;
         	}
         }
