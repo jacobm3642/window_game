@@ -22,3 +22,11 @@ typedef struct Square {
     Color color;
     char norm;
 } Square;
+
+Square make_square(int top_left[2], int top_right[2], int lower_left[2], int lower_right[2], int color[3]);
+
+void convert_Vec2(Vec2 *vec);
+
+void convert_Color(Color *color);
+
+void convert_square_values(Square *square);

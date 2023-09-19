@@ -2,6 +2,7 @@
 #include "shapes.h"
 #include<stdio.h>
 #include<stdlib.h>
+#include <unistd.h>
 #include<X11/X.h>
 #include<X11/Xlib.h>
 #include<GL/gl.h>
@@ -19,42 +20,6 @@ GLXContext              glc;
 XWindowAttributes       gwa;
 XEvent                  xev;
 
-Square make_square(int top_left[2], int top_right[2], int lower_left[2], int lower_right[2], int color[3]){
-    Square temp;
-    temp.top_left.x = top_left[0];
-    temp.top_left.y = top_left[1];
-    temp.top_right.x = top_right[0];
-    temp.top_right.y = top_right[1];  
-    temp.lower_left.x = lower_left[0];
-    temp.lower_left.y = lower_left[1];
-    temp.lower_right.x = lower_right[0];
-    temp.lower_right.y = lower_right[1];
-    temp.color.r = color[0];
-    temp.color.g = color[1];
-    temp.color.b = color[2];
-    temp.norm = 0;
-    return temp;
-}
-
-void convert_Vec2(Vec2 *vec) {
-        vec->x = vec->x/1000;
-        vec->y = vec->y/1000;
-}
-
-void convert_Color(Color *color) {
-    color->r = color->r/255;
-    color->g = color->g/255;
-    color->b = color->b/255;
-}
-
-void convert_square_values(Square *square) {
-    convert_Vec2(&(square->top_left));
-    convert_Vec2(&(square->top_right));
-    convert_Vec2(&(square->lower_left));
-    convert_Vec2(&(square->lower_right));
-    convert_Color(&(square->color));
-    square->norm = 1;
-}
 
 void DrawAQuad(Square *square) {
  	glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -139,29 +104,40 @@ int main(int argc, char *argv[]) {
     *test = make_square(t_l, t_r, b_l, b_r, color);
     // end of part that needs to be cleaned
 
-	while(1) {
- 		XNextEvent(dpy, &xev);
-        if(xev.type == Expose) {
-        	XGetWindowAttributes(dpy, win, &gwa);
-            glViewport(0, 0, gwa.width, gwa.height);
-        	DrawAQuad(test);
-            glXSwapBuffers(dpy, win);
-        } else if(xev.type == KeyPress) {
-			KeySym key = XLookupKeysym(&xev.xkey, 0);
-	
-        	switch (key) {
-                case XK_Escape:
-                    free(test);
-                    glXMakeCurrent(dpy, None, NULL);
-        	        glXDestroyContext(dpy, glc);
-        	        XDestroyWindow(dpy, win);
-        	        XCloseDisplay(dpy);
-        	        exit(0);
-                    break;
-                case XK_Up:
+	while(1){
+    	while (XPending(dpy) > 0) {
+    	    XNextEvent(dpy, &xev);
 
-                    break;
-        	}
-        }
-    } /* this closes while(1) { */
+    	    if (xev.type == Expose) {
+    	        XGetWindowAttributes(dpy, win, &gwa);
+    	        glViewport(0, 0, gwa.width, gwa.height);
+    	        DrawAQuad(test);
+    	        glXSwapBuffers(dpy, win);
+    	    } else if (xev.type == KeyPress) {
+    	        KeySym key = XLookupKeysym(&xev.xkey, 0);
+
+    	        switch (key) {
+    	            case XK_Escape:
+    	                free(test);
+    	                glXMakeCurrent(dpy, None, NULL);
+    	                glXDestroyContext(dpy, glc);
+    	                XDestroyWindow(dpy, win);
+    	                XCloseDisplay(dpy);
+    	                exit(0);
+    	                break;
+    	            case XK_Up:
+    	                test->top_left.y += 10.0/1000.0; // Use floating point arithmetic
+    	                test->top_right.y += 10.0/1000.0;
+    	                test->lower_left.y += 10.0/1000.0;
+    	                test->lower_right.y += 10.0/1000.0;
+    	                XClearWindow(dpy, win); 
+    	                DrawAQuad(test);
+    	                glXSwapBuffers(dpy, win);
+    	                break;
+    	        }
+    	    }
+			// Allow some time for other system processes
+    		usleep(10000); // 10 milliseconds
+    	}
+	}
 } /* this is the } which closes int main(int argc, char *argv[]) { */
