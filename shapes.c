@@ -36,3 +36,8 @@ void convert_square_values(Square *square) {
     convert_Color(&(square->color));
     square->norm = 1;
 }
+
+Polygon make_polygon(Vec2 *points[], int size; int color[3]) {
+    Polygon.size = size;
+    Polygon.vertex = points;
+}

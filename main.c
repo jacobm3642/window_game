@@ -3,11 +3,13 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <unistd.h>
+#include <time.h>
 #include<X11/X.h>
 #include<X11/Xlib.h>
 #include<GL/gl.h>
 #include<GL/glx.h>
 #include<GL/glu.h>
+
 
 Display                 *dpy;
 Window                  root;
@@ -59,7 +61,7 @@ int main(int argc, char *argv[]) {
  	// this checks if the server has made a connection
  	if(dpy == NULL) {
  		printf("\n\tcannot connect to X server\n\n");
- 	       exit(0);
+ 	    exit(0);
  	}
 	
  	// this gets a root window for the display pass into it
@@ -71,7 +73,7 @@ int main(int argc, char *argv[]) {
  	// checks if the visual worked and if it did makes a hex output
  	if(vi == NULL) {
 		printf("\n\tno appropriate visual found\n\n");
- 	       exit(0);
+ 	    exit(0);
  	} 
  	else {
 		printf("\n\tvisual %p selected\n", (void *)vi->visualid); /* %p creates hexadecimal output like in glxinfo */
@@ -126,18 +128,17 @@ int main(int argc, char *argv[]) {
     	                exit(0);
     	                break;
     	            case XK_Up:
-    	                test->top_left.y += 10.0/1000.0; // Use floating point arithmetic
+    	                test->top_left.y += 10.0/1000.0;
     	                test->top_right.y += 10.0/1000.0;
     	                test->lower_left.y += 10.0/1000.0;
     	                test->lower_right.y += 10.0/1000.0;
-    	                XClearWindow(dpy, win); 
-    	                DrawAQuad(test);
-    	                glXSwapBuffers(dpy, win);
     	                break;
     	        }
     	    }
-			// Allow some time for other system processes
-    		usleep(10000); // 10 milliseconds
     	}
+		usleep(5000);
+		XClearWindow(dpy, win); 
+    	DrawAQuad(test);
+    	glXSwapBuffers(dpy, win);
 	}
 } /* this is the } which closes int main(int argc, char *argv[]) { */
