@@ -1,14 +1,14 @@
 // -- Written in C -- //
 #include "shapes.h"
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
-#include<X11/X.h>
-#include<X11/Xlib.h>
-#include<GL/gl.h>
-#include<GL/glx.h>
-#include<GL/glu.h>
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <GL/gl.h>
+#include <GL/glx.h>
+#include <GL/glu.h>
 
 
 Display                 *dpy;

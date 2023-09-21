@@ -37,7 +37,23 @@ void convert_square_values(Square *square) {
     square->norm = 1;
 }
 
-Polygon make_polygon(Vec2 *points[], int size; int color[3]) {
-    Polygon.size = size;
-    Polygon.vertex = points;
+Polygon make_polygon(Vec2 *points[], int size, int color[3]) {
+    Polygon *temp; 
+    *temp = malloc(sizeof(Polygon) + sizeof(Vec2)*size);
+    
+    if (temp != NULL) {
+        return 1;
+    }
+
+    temp.size = size;
+    temp.color.r = color[0];
+    temp.color.g = color[1];
+    temp.color.b = color[2];
+    temp.norm = 0;
+    
+    for (int i = 0; i < size; i++){
+        temp->Vertex[i] = points[i];
+    }
+    
+    return *temp;
 }

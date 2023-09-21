@@ -25,12 +25,12 @@ typedef struct Square {
 
 typedef struct Polygon {
     int size;
-    Vec2 *Vertex[];
     Color color;
     char norm;
+    Vec2 *Vertex[];
 } Polygon;
 
-Polygon make_polygon(Vec2 *points[], int size; int color[3]);
+Polygon make_polygon(Vec2 *points[], int size, int color[3]);
 
 Square make_square(int top_left[2], int top_right[2], int lower_left[2], int lower_right[2], int color[3]);
 
