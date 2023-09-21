@@ -38,4 +38,6 @@ void convert_Vec2(Vec2 *vec);
 
 void convert_Color(Color *color);
 
+void convert_polygon_values(Polygon *polygon);
+
 void convert_square_values(Square *square);
