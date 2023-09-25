@@ -38,31 +38,30 @@ void convert_square_values(Square *square) {
     square->norm = 1;
 }
 
+//p(r, g, b, size, (x,y), (x,y)... )
+
 Polygon make_polygon(Vec2 *points[], int size, int color[3]) {
-    Polygon *temp; 
-    *temp = (Polygon*)malloc(sizeof(Polygon) + sizeof(Vec2)*size);
-    
+    Polygon *temp = (Polygon*)malloc(sizeof(Polygon) + sizeof(Vec2)*size);
+
     if (temp != NULL) {
-        // fuck off
+        temp->size = size;
+        temp->color.r = color[0];
+        temp->color.g = color[1];
+        temp->color.b = color[2];
+        temp->norm = 0;
+    
+        for (int i = 0; i < size; i++) {
+            temp->Vertex[i] = points[i];
+        }
     }
 
-    temp->size = size;
-    temp->color.r = color[0];
-    temp->color.g = color[1];
-    temp->color.b = color[2];
-    temp->norm = 0;
-    
-    for (int i = 0; i < size; i++){
-        temp->Vertex[i] = points[i];
-    }
-    
     return *temp;
 }
 
 void convert_polygon_values(Polygon *polygon) {
     convert_Color(&(polygon->color));
     for (int i = 0; i < polygon->size; i++ ) {
-        convert_Vec2(&(polygon->Vertex[i]));
+        convert_Vec2(polygon->Vertex[i]);
     }
     polygon->norm = 1;
 }

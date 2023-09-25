@@ -4,12 +4,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <math.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include <GL/glu.h>
-
 
 Display                 *dpy;
 Window                  root;
@@ -21,6 +21,65 @@ Window                  win;
 GLXContext              glc;
 XWindowAttributes       gwa;
 XEvent                  xev;
+
+int parce_line(char input[], Polygon *ploys[], int polyCount) {
+    int buffer[255] = {0};
+    int numbuff[8] = {0};
+    int j = 0, k = 0;
+    for (int i = 0; i < 255; i++){
+        if (input[i] >= '0' && input[i] <= '9') {
+            numbuff[j] = (input[i] - '0');
+            j++;
+        } else if (input[i] == ',') {
+            int sum = 0;
+            for (int l = 0; l < j; l++) {
+                sum += (numbuff[l] * pow(10, (j-l-1)));
+            }
+            buffer[k] = sum;
+            k++;
+            j = 0;
+        } else if (input[i] = '\0') {
+			break;
+		}
+    }
+	for (i = 0, i < k, i++) {
+		// Polygon *temp = (Polygon *)make_polygon();
+	}
+    return 0; // Add a return statement if needed
+}
+
+void DrawAScene(char path[], Polygon *ploys[]){
+    FILE *file;
+    char c_char;
+    int polyCount = 0;
+
+    file = fopen(path, "r");
+
+    if (file == NULL) {
+        fprintf(stderr, "Could not open file for reading.\n");
+        return; // Return early in case of an error
+    }
+
+    do {
+        char linebuffer[255];
+        int i = 0;
+
+        do {
+            c_char = fgetc(file);
+            if (c_char != '\n' && c_char != EOF)
+                linebuffer[i++] = c_char;
+        } while (c_char != '\n' && c_char != EOF);
+
+        linebuffer[i] = '\0'; // Add null-terminator to make it a valid C string
+
+        if (polyCount < 40) {
+            parse_line(linebuffer, ploys, polyCount);
+            polyCount += 1;
+        }
+    } while (c_char != EOF);
+
+    fclose(file);
+}
 
 
 void DrawAQuad(Square *square) {
@@ -106,6 +165,8 @@ int main(int argc, char *argv[]) {
     *test = make_square(t_l, t_r, b_l, b_r, color);
     // end of part that needs to be cleaned
 
+	Polygon *scene[] = (Polygon*)malloc(sizeof(polygon) * 40);
+
 	while(1){
     	while (XPending(dpy) > 0) {
     	    XNextEvent(dpy, &xev);
@@ -138,7 +199,7 @@ int main(int argc, char *argv[]) {
     	}
 		usleep(5000);
 		XClearWindow(dpy, win); 
-    	DrawAQuad(test);
+    	DrawAScene("./assets/scene0.dat", scene);
     	glXSwapBuffers(dpy, win);
 	}
 } /* this is the } which closes int main(int argc, char *argv[]) { */
